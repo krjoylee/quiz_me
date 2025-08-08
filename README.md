@@ -1,3 +1,7 @@
+
+# 게임 바로하기
+[👉 게임 바로가기](https://krjoylee.github.io/quiz_me/brainrot-quiz-final.html)
+
 # quiz_me
 아이가 좋아하는 캐릭터로 만든 게임 실습 저장소입니다.
 A game made with a character my 7-year-old son loves
