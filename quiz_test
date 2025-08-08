@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>퀴즈 실습</title>
+  </head>
+  <body>
+    <h1>아이가 좋아하는 캐릭터 퀴즈</h1>
+    <p>질문: 이 캐릭터의 이름은 무엇일까요?</p>
+  </body>
+</html>
