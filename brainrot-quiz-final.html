@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>진짜 브레인롯 이름을 맞춰줘</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-green-400: rgba(34, 197, 94, 1);
+            --color-green-500: rgba(22, 163, 74, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--color-green-400), var(--color-white), var(--color-red-400));
+            min-height: 100vh;
+            color: var(--color-black);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .main-content {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--color-green-500), var(--color-red-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-gray-400);
+            margin-bottom: 30px;
+        }
+
+        .mode-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .mode-btn {
+            background: var(--color-white);
+            border: 3px solid var(--color-gray-200);
+            border-radius: 15px;
+            padding: 25px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--color-green-400);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.2);
+        }
+
+        .mode-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .mode-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--color-black);
+        }
+
+        .mode-description {
+            font-size: 0.85rem;
+            color: var(--color-gray-400);
+            line-height: 1.3;
+        }
+
+        .info-card {
+            background: var(--color-cream-50);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .info-card h3 {
+            color: var(--color-black);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .info-card ul {
+            list-style: none;
+        }
+
+        .info-card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: var(--color-gray-400);
+        }
+
+        .info-card li::before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+            top: 8px;
+        }
+
+        .quiz-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .quiz-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: var(--color-gray-200);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-green-400), var(--color-green-500));
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .question-card {
+            margin-bottom: 30px;
+        }
+
+        .quiz-type {
+            font-size: 1.5rem;
+            color: var(--color-green-500);
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: var(--color-black);
+        }
+
+        .question-image {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .question-image img {
+            max-width: 350px;
+            max-height: 350px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            object-fit: contain;
+        }
+
+        .character-emoji {
+            font-size: 8rem;
+            margin: 20px 0;
+            display: block;
+        }
+
+        .image-error {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px dashed var(--color-gray-300);
+        }
+
+        .image-error p {
+            color: var(--color-gray-400);
+            margin: 5px 0;
+        }
+
+        .image-error .emoji {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .option-btn {
+            background: var(--color-white);
+            border: 2px solid var(--color-gray-300);
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover {
+            border-color: var(--color-green-400);
+            background: var(--color-green-400);
+            color: var(--color-white);
+            transform: translateY(-2px);
+        }
+
+        .option-btn.selected {
+            background: var(--color-green-500);
+            color: var(--color-white);
+            border-color: var(--color-green-500);
+        }
+
+        .option-btn.correct {
+            background: var(--color-green-500);
+            color: var(--color-white);
+            border-color: var(--color-green-500);
+        }
+
+        .option-btn.incorrect {
+            background: var(--color-red-400);
+            color: var(--color-white);
+            border-color: var(--color-red-400);
+        }
+
+        .feedback-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .result-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .result-details {
+            font-size: 1.1rem;
+            color: var(--color-gray-400);
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: var(--color-green-500);
+            color: var(--color-white);
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            background: var(--color-green-400);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+        }
+
+        .btn--secondary {
+            background: var(--color-gray-400);
+        }
+
+        .btn--secondary:hover {
+            background: var(--color-gray-300);
+        }
+
+        .result-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .final-score {
+            margin: 30px 0;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--color-green-500);
+            margin-bottom: 15px;
+        }
+
+        .score-grade {
+            font-size: 1.5rem;
+            color: var(--color-orange-400);
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .mode-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-title {
+                font-size: 2rem;
+            }
+            
+            .character-emoji {
+                font-size: 6rem;
+            }
+
+            .question-image img {
+                max-width: 280px;
+                max-height: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 메인 화면 -->
+    <div id="mainScreen" class="screen active">
+        <div class="container">
+            <div class="main-content">
+                <div class="game-logo">
+                    <h1 class="game-title">🇮🇹 진짜 브레인롯 이름을 맞춰줘 🧠</h1>
+                    <p class="game-subtitle">이탈리안 브레인롯 캐릭터들의 진짜 이름을 맞춰보세요!</p>
+                </div>
+                
+                <div class="game-modes">
+                    <h2 class="modes-title">게임 모드를 선택하세요</h2>
+                    <div class="mode-buttons">
+                        <button class="mode-btn text-mode" onclick="selectGameMode('text')">
+                            <div class="mode-icon">📝</div>
+                            <div class="mode-title">텍스트 버전</div>
+                            <div class="mode-description">설명, 능력, 특징을 보고<br>캐릭터 이름을 맞춰보세요!</div>
+                        </button>
+                        <button class="mode-btn emoji-mode" onclick="selectGameMode('emoji')">
+                            <div class="mode-icon">😎</div>
+                            <div class="mode-title">그림 연상 버전</div>
+                            <div class="mode-description">캐릭터 이모지를 보고<br>이름을 맞춰보세요!</div>
+                        </button>
+                        <button class="mode-btn image-mode" onclick="selectGameMode('image')">
+                            <div class="mode-icon">🖼️</div>
+                            <div class="mode-title">그림 버전</div>
+                            <div class="mode-description">실제 캐릭터 이미지를 보고<br>이름을 맞춰보세요!</div>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="game-info">
+                    <div class="info-card">
+                        <h3>게임 규칙</h3>
+                        <ul>
+                            <li>총 10문제의 객관식 퀴즈</li>
+                            <li>각 문제마다 4개의 선택지</li>
+                            <li>정답을 맞춰 최고 점수를 노려보세요!</li>
+                            <li>모드 선택 후 언제든 다른 모드로 전환 가능</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 퀴즈 화면 -->
+    <div id="quizScreen" class="screen">
+        <div class="container">
+            <div class="quiz-content">
+                <div class="quiz-header">
+                    <div class="progress-info">
+                        <span class="question-number">문제 <span id="currentQuestion">1</span> / 10</span>
+                        <span class="score">점수: <span id="currentScore">0</span></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+                
+                <div class="question-card">
+                    <h2 class="quiz-type" id="quizType">문제 유형</h2>
+                    <div class="question-text" id="questionText">문제 내용</div>
+                    
+                    <!-- 그림 연상 버전 (이모지) -->
+                    <div class="question-image" id="questionEmojiImage" style="display: none;">
+                        <span class="character-emoji" id="characterEmoji"></span>
+                    </div>
+
+                    <!-- 실제 그림 버전 (이미지) -->
+                    <div class="question-image" id="questionRealImage" style="display: none;">
+                        <img id="characterImage" src="" alt="캐릭터 이미지" onload="imageLoaded()" onerror="imageError()">
+                        <div id="imageError" class="image-error" style="display: none;">
+                            <div class="emoji">🖼️❌</div>
+                            <p><strong>이미지를 불러올 수 없습니다</strong></p>
+                            <p>이미지 대신 설명으로 문제를 풀어주세요</p>
+                            <div id="fallbackDescription" style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px; font-style: italic;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="options" id="options">
+                    <button class="option-btn" onclick="selectAnswer(0)">선택지 1</button>
+                    <button class="option-btn" onclick="selectAnswer(1)">선택지 2</button>
+                    <button class="option-btn" onclick="selectAnswer(2)">선택지 3</button>
+                    <button class="option-btn" onclick="selectAnswer(3)">선택지 4</button>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn btn--secondary" onclick="goToMain()">메인으로</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 피드백 화면 -->
+    <div id="feedbackScreen" class="screen">
+        <div class="container">
+            <div class="feedback-content">
+                <div class="feedback-result" id="feedbackResult">
+                    <div class="result-icon" id="resultIcon">✅</div>
+                    <div class="result-text" id="resultText">정답입니다!</div>
+                    <div class="result-details" id="resultDetails">정답: 캐릭터 이름</div>
+                </div>
+                <button class="btn" onclick="nextQuestion()">다음 문제</button>
+                <button class="btn btn--secondary" onclick="goToMain()">메인으로</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div id="resultScreen" class="screen">
+        <div class="container">
+            <div class="result-content">
+                <h2>🎉 퀴즈 완료! 🎉</h2>
+                <div class="final-score">
+                    <div class="score-display">
+                        <span class="score-number" id="finalScore">0</span> / 10
+                    </div>
+                    <div class="score-grade" id="scoreGrade">등급</div>
+                </div>
+                <div class="result-buttons">
+                    <button class="btn" onclick="restartGame()">다시하기</button>
+                    <button class="btn btn--secondary" onclick="goToMain()">메인으로</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 나무위키에서 가져온 실제 이미지 URL을 포함한 게임 데이터 (모든 캐릭터 실제 이미지 적용)
+        const characters = [
+            {
+                name: "트랄랄레로 트랄랄라",
+                englishName: "Tralalero Tralala",
+                description: "나이키 운동화를 신고 해변 위에 나와 있는 다리가 3개인 상어 캐릭터이다.",
+                abilities: "초인적인 속도로 달릴 수 있고 멀리 뛸 수 있는 운동 능력",
+                characteristics: "운동선화를 착용한 독특한 상어",
+                type: "상어",
+                emoji: "🦈👟",
+                imageUrl: "https://i.namu.wiki/i/GfZFi0J9-qqF9cKXfjMIIZy0dpu1XaGXLmj39SHBmeDe1Ef68d_QpAUp1CtKA8A3HiQagy4zrOI4YOAdpI0s0ZXIB2q1Lnug7BNuJSiam50XcTPizVtI65LuIjuLYQJjxfLJ9iSrWDI2At-tTE5dIw.webp"
+            },
+            {
+                name: "봄바르디로 크로코딜로",
+                englishName: "Bombardiro Crocodilo",
+                description: "폭격기와 악어의 형상을 합친 캐릭터",
+                abilities: "폭격을 주 무기로 사용하며 비행 능력을 가지고 있음",
+                characteristics: "제2차 세계 대전 시대의 쌍발 폭격기 몸체와 악어 머리",
+                type: "악어-폭격기",
+                emoji: "🐊✈️",
+                imageUrl: "https://i.namu.wiki/i/JH7BXUlBkhL-qEecOmp_dWF4xt3L6pAEQ-kBZyuWyEDKg3IvrjwdZko0OakGczZW8oEi0js2K5COLyEOWlijfe_gC4Gvtqhtq8kwh8gYcVHnoTZI7N87UZehxhxY_1TB36HDChc50hrbXrGz6LhQug.webp"
+            },
+            {
+                name: "퉁퉁퉁 사후르",
+                englishName: "Tung Tung Tung Sahur",
+                description: "야구방망이를 든 의인화된 나무 물체",
+                abilities: "세계관 최강의 강자로 여겨짐",
+                characteristics: "인디언 클럽이나 베둑 드럼과 유사한 형태",
+                type: "나무 캐릭터",
+                emoji: "🌳⚾",
+                imageUrl: "https://i.namu.wiki/i/JztewMrQhdJWj2XU1DZNEIzOLT9jlayeTYMVaubYeyrajPjf6t7CUnlndYukaKpYl1rvLPK0hiUFNGmAdwe9J20sFTWdB95n4b9M4uqor7aEHZJDBcBkbSWO97rnlypmfJdTwTu3BzA8AlQC9uUigQ.webp"
+            },
+            {
+                name: "발레리나 카푸치나",
+                englishName: "Ballerina Cappuccina",
+                description: "튀튀를 입고 푸앵트 슈즈를 신은 발레리나",
+                abilities: "우아한 피루에트를 할 수 있음",
+                characteristics: "머리가 카푸치노 잔인 발레리나",
+                type: "발레리나",
+                emoji: "💃☕",
+                imageUrl: "https://i.namu.wiki/i/giAzfdYXN-MGzzE3xFervbvELFwT9GrgFZlW1pb0Jdc982p69HrQ4Lwvr4Fvnw0x60tN6ZSG6zmyFtJeWTbmqMcHAe7uX_UCdkoOshxYTdgb8ZvlrdmTnreApoulUchZNgNXoz529xgcSLIjFJrPuA.webp"
+            },
+            {
+                name: "브르르 브르르 파타핌",
+                englishName: "Brr Brr Patapim",
+                description: "나무와 코주부원숭이, 사람 발이 결합된 캐릭터",
+                abilities: "숲의 평화를 수호하지만 침입자에게는 자비가 없음",
+                characteristics: "신비로운 이탈리안 원숭이",
+                type: "원숭이",
+                emoji: "🐵🌿",
+                imageUrl: "https://i.namu.wiki/i/jVdeCgbectSKkyWf1i9mJvEBZYVRfTmkK5ufblNA96Gl9RHwMNip_fqlVqB31uNaEWQh0ULu2jl8Ywu8cDOcmlBPeh8bl99_KsbUe5eeOc858k5SQ2Itt1gONmu7WPK173-HAxL8-6fiqDBfNGVqTA.webp"
+            },
+            {
+                name: "카푸치노 아사시노",
+                englishName: "Cappuccino Assassino",
+                description: "카푸치노 머리를 가진 암살자",
+                abilities: "번개처럼 빠르고 치명적이며 카페인과 복수심으로 움직임",
+                characteristics: "카푸치노를 머리로 하고 칼을 팔로 한 암살자",
+                type: "암살자",
+                emoji: "☕🗡️",
+                imageUrl: "https://i.namu.wiki/i/ViGDYRhwr7-v0j64T1ZeAB2L0YJlFsxVQuNlSa-5JghAnt-qmahsRhvw7KAXX3FjO_GYdIFnpasiR4QRJHo7bJHRKSFG76BNMIwLfveoWCV7gXsFdW5Y2e75M7DF8BcC29wr9QDNBdm2s4whdFasPA.webp"
+            },
+            {
+                name: "침팬지니 바나니니",
+                englishName: "Chimpanzini Bananini",
+                description: "바나나를 몸으로 한 원숭이",
+                abilities: "불멸의 존재로 여겨짐",
+                characteristics: "장르의 주요 캐릭터 중 하나",
+                type: "원숭이",
+                emoji: "🐒🍌",
+                imageUrl: "https://i.namu.wiki/i/d-e5x--pUbVOuskOSZg6OMil2WNhj9tn8Mkb-fcCdrQEyfRmIfqVoQZSrcY9YKrFoPXRWw4xtujVs9AR72R-Vl0IRV-065cYfQm8OwVHtvOza-EPoSDw6uXByikfFXOjvbFlmLpWavMuuMehhXShtw.webp"
+            },
+            {
+                name: "리릴리 라릴라",
+                englishName: "Lirili Larila",
+                description: "샌들을 신은 선인장-코끼리 하이브리드",
+                abilities: "시간을 조종하는 능력을 가지고 있음",
+                characteristics: "두 발로 걷는 선인장-코끼리 합성체",
+                type: "선인장-코끼리",
+                emoji: "🌵🐘",
+                imageUrl: "https://i.namu.wiki/i/51qmy5mgkHUzwNz-dXIY2vGGkRvHtD3MsVeR8-bM3MHS_Qn2uU4ANmpGwoMH6AVzOD6VooXtHvXvBNutzmCTBB_4_n7J7HwIW7cRhMD7M0lbqlCRvBOilj8GQWSPn9jXU2IFj_EQj5Z6kqAaCnPA_g.webp"
+            },
+            {
+                name: "프리고 카멜로",
+                englishName: "Frigo Camelo",
+                description: "몸통이 냉장고이고 큰 부츠를 신은 낙타",
+                abilities: "얼음 관련 능력을 가지고 있을 것으로 추정",
+                characteristics: "냉장고와 낙타의 합성체",
+                type: "낙타-냉장고",
+                emoji: "🐪❄️",
+                imageUrl: "https://i.namu.wiki/i/6149Y5gmbJrgRpAnfeS9CiVCdrE4P1P5HzYizvJ_b52KE2sMZKexxNmR4q37PF-gSTJSqvdS2AKerAUoUav4qZ7A64U8OoyNh1A4yGhnOgwPwOLFIiYHHIZDhQl4DVYuIAprkoxRGoIzF6IeQSs4_A.webp"
+            },
+            {
+                name: "트리피 트로피",
+                englishName: "Trippi Troppi",
+                description: "새우 몸을 가진 고양이 또는 물고기 머리를 가진 비만 곰",
+                abilities: "바다의 왕으로 불림",
+                characteristics: "두 가지 버전으로 존재하는 캐릭터",
+                type: "고양이-새우 또는 곰-물고기",
+                emoji: "🦐🐱",
+                imageUrl: "https://i.namu.wiki/i/HbHAtrrKugsqsgaJfIz3W3w2PIi40-gn93uqWYhly_0CqNrffy0xb9We8ZLKakIoUR05gYHDrRIl_qLXjXxN4Z3y7jIy0nC7eOCFpO-vjIdfm8K_Sa7Se5tl9ycRDXx_6OsjHXzpMdYvecB5NKJpWw.webp"
+            }
+        ];
+
+        const fakeCharacters = [
+            "피자리니 마르게리타",
+            "스파게티오 카르보나로",
+            "젤라토리노 바닐라로",
+            "라자냐델로 볼로녜세",
+            "리조또리니 파르미지아노",
+            "티라미수로 마스카르포네",
+            "칸놀리니 시칠리아노",
+            "파네토네로 밀라노로"
+        ];
+
+        // 게임 상태
+        let currentGameMode = 'text';
+        let currentQuestionIndex = 0;
+        let currentScore = 0;
+        let questions = [];
+        let selectedAnswer = null;
+        let currentCharacter = null;
+
+        // 화면 전환 함수
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // 게임 모드 선택
+        function selectGameMode(mode) {
+            currentGameMode = mode;
+            generateQuestions();
+            startQuiz();
+        }
+
+        // 문제 생성
+        function generateQuestions() {
+            questions = [];
+            const shuffledCharacters = [...characters].sort(() => Math.random() - 0.5);
+
+            for (let i = 0; i < 10; i++) {
+                const character = shuffledCharacters[i % shuffledCharacters.length];
+                const question = createQuestion(character);
+                questions.push(question);
+            }
+        }
+
+        // 문제 생성 함수
+        function createQuestion(character) {
+            const questionTypes = ['description', 'abilities', 'characteristics', 'english'];
+            const randomType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+
+            let questionText = '';
+            let correctAnswer = character.name;
+
+            switch (randomType) {
+                case 'description':
+                    questionText = `다음 설명에 해당하는 캐릭터는? "${character.description}"`;
+                    break;
+                case 'abilities':
+                    questionText = `다음 능력을 가진 캐릭터는? "${character.abilities}"`;
+                    break;
+                case 'characteristics':
+                    questionText = `다음 특징을 가진 캐릭터는? "${character.characteristics}"`;
+                    break;
+                case 'english':
+                    questionText = `"${character.englishName}"의 한국어 이름은?`;
+                    break;
+            }
+
+            // 선택지 생성
+            const wrongAnswers = characters
+                .filter(c => c.name !== character.name)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 3)
+                .map(c => c.name);
+
+            const options = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+
+            return {
+                type: randomType,
+                text: questionText,
+                character: character,
+                options: options,
+                correctAnswer: correctAnswer,
+                correctIndex: options.indexOf(correctAnswer)
+            };
+        }
+
+        // 퀴즈 시작
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            currentScore = 0;
+            selectedAnswer = null;
+            showScreen('quizScreen');
+            displayQuestion();
+        }
+
+        // 문제 표시
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            currentCharacter = question.character;
+            
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('currentScore').textContent = currentScore;
+            document.getElementById('progressFill').style.width = `${((currentQuestionIndex + 1) / 10) * 100}%`;
+
+            document.getElementById('quizType').textContent = getQuizTypeTitle(question.type);
+            document.getElementById('questionText').textContent = question.text;
+
+            // 이미지 컨테이너들 초기화
+            document.getElementById('questionEmojiImage').style.display = 'none';
+            document.getElementById('questionRealImage').style.display = 'none';
+            document.getElementById('imageError').style.display = 'none';
+
+            // 모드별 이미지 처리
+            if (currentGameMode === 'emoji') {
+                // 그림 연상 버전 (이모지)
+                document.getElementById('questionEmojiImage').style.display = 'block';
+                document.getElementById('characterEmoji').textContent = question.character.emoji;
+            } else if (currentGameMode === 'image') {
+                // 실제 그림 버전 (이미지)
+                document.getElementById('questionRealImage').style.display = 'block';
+                const characterImage = document.getElementById('characterImage');
+                
+                characterImage.src = question.character.imageUrl;
+                characterImage.style.display = 'block';
+            }
+
+            // 선택지 표시
+            const optionButtons = document.querySelectorAll('.option-btn');
+            question.options.forEach((option, index) => {
+                optionButtons[index].textContent = option;
+                optionButtons[index].className = 'option-btn';
+                optionButtons[index].disabled = false;
+            });
+
+            selectedAnswer = null;
+        }
+
+        // 이미지 로딩 성공
+        function imageLoaded() {
+            document.getElementById('imageError').style.display = 'none';
+        }
+
+        // 이미지 로딩 실패
+        function imageError() {
+            document.getElementById('characterImage').style.display = 'none';
+            document.getElementById('imageError').style.display = 'block';
+            document.getElementById('fallbackDescription').textContent = currentCharacter.description;
+        }
+
+        // 퀴즈 타입 제목 반환
+        function getQuizTypeTitle(type) {
+            const titles = {
+                'description': '설명을 보고 캐릭터 이름을 맞춰보세요!',
+                'abilities': '능력을 보고 캐릭터를 맞춰보세요!',
+                'characteristics': '특징을 보고 캐릭터를 맞춰보세요!',
+                'english': '영어 이름에 해당하는 한국어 이름을 고르세요!',
+                'emoji': '이모지를 보고 캐릭터 이름을 맞춰보세요!',
+                'image': '그림을 보고 캐릭터 이름을 맞춰보세요!'
+            };
+
+            if (currentGameMode === 'emoji') {
+                return '이모지를 보고 캐릭터 이름을 맞춰보세요!';
+            } else if (currentGameMode === 'image') {
+                return '그림을 보고 캐릭터 이름을 맞춰보세요!';
+            }
+            
+            return titles[type] || '문제를 풀어보세요!';
+        }
+
+        // 답안 선택
+        function selectAnswer(index) {
+            if (selectedAnswer !== null) return;
+
+            selectedAnswer = index;
+            const question = questions[currentQuestionIndex];
+            const optionButtons = document.querySelectorAll('.option-btn');
+
+            // 선택한 버튼 표시
+            optionButtons[index].classList.add('selected');
+
+            // 모든 버튼 비활성화
+            optionButtons.forEach(btn => btn.disabled = true);
+
+            // 정답 표시
+            optionButtons[question.correctIndex].classList.add('correct');
+            
+            // 오답인 경우 표시
+            if (index !== question.correctIndex) {
+                optionButtons[index].classList.add('incorrect');
+            }
+
+            // 잠시 후 피드백 화면으로 이동
+            setTimeout(() => {
+                showFeedback(index === question.correctIndex);
+            }, 1500);
+        }
+
+        // 피드백 표시
+        function showFeedback(isCorrect) {
+            const question = questions[currentQuestionIndex];
+            
+            document.getElementById('resultIcon').textContent = isCorrect ? '✅' : '❌';
+            document.getElementById('resultText').textContent = isCorrect ? '정답입니다!' : '오답입니다!';
+            document.getElementById('resultDetails').textContent = `정답: ${question.correctAnswer}`;
+
+            if (isCorrect) {
+                currentScore++;
+            }
+
+            showScreen('feedbackScreen');
+        }
+
+        // 다음 문제
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex >= questions.length) {
+                showResults();
+            } else {
+                showScreen('quizScreen');
+                displayQuestion();
+            }
+        }
+
+        // 결과 표시
+        function showResults() {
+            document.getElementById('finalScore').textContent = currentScore;
+            
+            let grade = '';
+            if (currentScore >= 9) grade = '🏆 브레인롯 마스터!';
+            else if (currentScore >= 7) grade = '🥇 브레인롯 전문가!';
+            else if (currentScore >= 5) grade = '🥈 브레인롯 애호가!';
+            else if (currentScore >= 3) grade = '🥉 브레인롯 입문자!';
+            else grade = '📚 더 공부해보세요!';
+
+            document.getElementById('scoreGrade').textContent = grade;
+            showScreen('resultScreen');
+        }
+
+        // 게임 재시작
+        function restartGame() {
+            selectGameMode(currentGameMode);
+        }
+
+        // 메인으로
+        function goToMain() {
+            showScreen('mainScreen');
+        }
+    </script>
+</body>
+</html>
